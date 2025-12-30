@@ -2,6 +2,7 @@ import { Injectable, ForbiddenException } from '@nestjs/common';
 import { CreateFolderDto } from './dto/create-folder.dto';
 import { UpdateFolderDto } from './dto/update-folder.dto';
 import { PrismaService } from 'src/prisma.client';
+import type { Breadcrumb } from './types';
 
 @Injectable()
 export class FoldersService {
@@ -18,14 +19,39 @@ export class FoldersService {
   }
 
   findAll(userId: string, parentId?: string | null) {
+    const normalizedParentId =
+    parentId === 'null' || parentId === undefined
+      ? null
+      : parentId
+
     return this.prisma.folder.findMany({
       where: {
         ownerId: userId,
-        parentId: parentId ?? null,
+        parentId: normalizedParentId,
       },
       orderBy: { createdAt: 'asc' },
     });
   }
+
+  async getBreadcrumbs(folderId: string) {
+    const path: Breadcrumb[] = []
+
+    let current = await this.prisma.folder.findUnique({
+      where: { id: folderId },
+    });
+
+    while (current) {
+      path.unshift({ id: current.id, name: current.name });
+
+      if (!current.parentId) break
+
+      current = await this.prisma.folder.findUnique({
+        where: { id: current.parentId },
+      });
+    }
+
+    return path
+  } 
 
   async update(userId: string, id: string, dto: UpdateFolderDto) {
     const folder = await this.prisma.folder.findUnique({ where: { id } });
