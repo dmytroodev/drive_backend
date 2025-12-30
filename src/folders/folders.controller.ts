@@ -14,6 +14,11 @@ export class FoldersController {
     return this.foldersService.findAll(req.user.sub, parentId);
   }
 
+  @Get('breadcrumbs/:folderId') 
+  getBreadcrumbs(@Param('folderId') folderId: string) {
+    return this.foldersService.getBreadcrumbs(folderId);
+  }
+
   @Post()
   create(@Req() req, @Body() dto: CreateFolderDto) {
     return this.foldersService.create(req.user.sub, dto);
