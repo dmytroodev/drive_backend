@@ -17,6 +17,7 @@ model User {
   createdAt DateTime @default(now())
 
   folders   Folder[]
+  files     File[]
 }
 
 model Folder {
@@ -26,8 +27,27 @@ model Folder {
   parent    Folder?  @relation("FolderTree", fields: [parentId], references: [id])
   children  Folder[] @relation("FolderTree")
 
+  files     File[]
+
   ownerId   String
-  owner     User     @relation(fields: [ownerId], references: [id])
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model File {
+  id        String   @id @default(uuid())
+  name      String
+  mimeType  String
+  size      Int
+  path      String
+  isPublic  Boolean  @default(false)
+
+  folderId  String?
+  folder    Folder? @relation(fields: [folderId], references: [id])
+
+  ownerId   String
+  owner     User    @relation(fields: [ownerId], references: [id])
 
   createdAt DateTime @default(now())
 }
