@@ -1,7 +1,8 @@
-import { Injectable, ForbiddenException } from '@nestjs/common';
+import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CreateFolderDto } from './dto/create-folder.dto';
 import { UpdateFolderDto } from './dto/update-folder.dto';
 import { PrismaService } from 'src/prisma.client';
+import { rmSync } from 'fs';
 import type { Breadcrumb } from './types';
 
 @Injectable()
@@ -67,12 +68,52 @@ export class FoldersService {
   }
 
   async remove(userId: string, id: string) {
-    const folder = await this.prisma.folder.findUnique({ where: { id } });
+    const folder = await this.prisma.folder.findUnique({
+      where: { id },
+    })
 
-    if (!folder || folder.ownerId !== userId) {
-      throw new ForbiddenException();
+    if (!folder) {
+      throw new NotFoundException('Folder not found');
     }
 
-    return this.prisma.folder.delete({ where: { id } });
+    if (folder.ownerId !== userId) {
+      throw new ForbiddenException()
+    }
+
+    const folderIds = await this.collectFolderIds(id)
+
+    const files = await this.prisma.file.findMany({
+      where: {
+        folderId: { in: folderIds },
+        ownerId: userId,
+      },
+    })
+
+    for (const file of files) {
+      try {
+        rmSync(file.path, { force: true })
+      } catch {}
+    }
+
+    await this.prisma.folder.delete({
+      where: { id }
+    })
+
+    return { success: true }
+  }
+
+  private async collectFolderIds(folderId: string): Promise<string[]> {
+    const children = await this.prisma.folder.findMany({
+      where: { parentId: folderId },
+      select: { id: true },
+    })
+
+    const ids = [folderId]
+
+    for (const child of children) {
+      ids.push(...(await this.collectFolderIds(child.id)))
+    }
+
+    return ids
   }
 }
