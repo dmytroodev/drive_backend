@@ -2,7 +2,9 @@ import {
   Controller,
   Post,
   Get,
+  Delete,
   Req,
+  Param,
   Query,
   Body,
   UseGuards,
@@ -43,5 +45,10 @@ export class FilesController {
       req.user.sub,
       folderId === 'null' ? null : folderId,
     )
+  }
+
+  @Delete(':id')
+  async remove(@Req() req, @Param('id') id: string) {
+    return this.filesService.remove(req.user.sub, id)
   }
 }

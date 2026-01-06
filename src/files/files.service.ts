@@ -1,5 +1,6 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma.client';
+import { rmSync, existsSync } from 'fs';
 
 @Injectable()
 export class FilesService {
@@ -41,5 +42,33 @@ export class FilesService {
       },
       orderBy: { createdAt: 'asc' },
     })
+  }
+
+  async remove(userId: string, fileId: string) {
+    const file = await this.prisma.file.findUnique({
+      where: { id: fileId },
+    })
+
+    if (!file) {
+      throw new NotFoundException('File not found')
+    }
+
+    if (file.ownerId !== userId) {
+      throw new ForbiddenException()
+    }
+
+    if (existsSync(file.path)) {
+      try {
+        rmSync(file.path)
+      } catch (e) {
+        // 
+      }
+    }
+
+    await this.prisma.file.delete({
+      where: { id: fileId },
+    })
+
+    return { success: true }
   }
 }

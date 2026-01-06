@@ -24,13 +24,13 @@ model Folder {
   id        String   @id @default(uuid())
   name      String
   parentId  String?
-  parent    Folder?  @relation("FolderTree", fields: [parentId], references: [id])
+  parent    Folder?  @relation("FolderTree", fields: [parentId], references: [id], onDelete: Cascade)
   children  Folder[] @relation("FolderTree")
 
   files     File[]
 
   ownerId   String
-  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner     User     @relation(fields: [ownerId], references: [id])
 
   createdAt DateTime @default(now())
 }
@@ -44,7 +44,7 @@ model File {
   isPublic  Boolean  @default(false)
 
   folderId  String?
-  folder    Folder? @relation(fields: [folderId], references: [id])
+  folder    Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
 
   ownerId   String
   owner     User    @relation(fields: [ownerId], references: [id])

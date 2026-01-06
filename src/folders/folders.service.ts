@@ -68,13 +68,6 @@ export class FoldersService {
   }
 
   async remove(userId: string, id: string) {
-    // const folder = await this.prisma.folder.findUnique({ where: { id } })
-
-    // if (!folder || folder.ownerId !== userId) {
-    //   throw new ForbiddenException()
-    // }
-
-    // return this.prisma.folder.delete({ where: { id } })
     const folder = await this.prisma.folder.findUnique({
       where: { id },
     })
