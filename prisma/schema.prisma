@@ -26,6 +26,7 @@ model Folder {
   parentId  String?
   parent    Folder?  @relation("FolderTree", fields: [parentId], references: [id], onDelete: Cascade)
   children  Folder[] @relation("FolderTree")
+  isPublic  Boolean  @default(false)
 
   files     File[]
 

@@ -15,6 +15,7 @@ export class FoldersService {
         name: dto.name,
         parentId: dto.parentId ?? null,
         ownerId: userId,
+        isPublic: dto.isPublic
       },
     });
   }
@@ -63,7 +64,10 @@ export class FoldersService {
 
     return this.prisma.folder.update({
       where: { id },
-      data: { name: dto.name },
+      data: { 
+        name: dto.name, 
+        isPublic: dto.isPublic 
+      },
     });
   }
 

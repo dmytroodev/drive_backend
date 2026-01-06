@@ -3,4 +3,5 @@ import { CreateFolderDto } from './create-folder.dto';
 
 export class UpdateFolderDto extends PartialType(CreateFolderDto) {
   name: string;
+  isPublic: boolean;
 }
