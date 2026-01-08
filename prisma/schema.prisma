@@ -9,15 +9,17 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String?  
-  googleId  String?  @unique
-  name      String?
-  createdAt DateTime @default(now())
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String?  
+  googleId    String?  @unique
+  name        String?
+  createdAt   DateTime @default(now())
 
-  folders   Folder[]
-  files     File[]
+  folders     Folder[]
+  files       File[]
+
+  permissions Permission[]
 }
 
 model Folder {
@@ -52,6 +54,23 @@ model File {
 
   createdAt DateTime @default(now())
 }
+
+model Permission {
+  id           String   @id @default(uuid())
+
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+
+  resourceId   String
+  resourceType ResourceType
+
+  access       AccessType
+
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, resourceId, resourceType])
+}
+
 
 enum ResourceType {
   file
