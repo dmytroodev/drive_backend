@@ -4,6 +4,8 @@ The backend is responsible for authentication, file and folder management,
 permissions logic and API access. The project was built as a pet project /
 test assignment with a focus on architecture and access control.
 
+## Swagger documentations url is "http://localhost:3000/api"
+
 ## Getting Started
 
 Firstly, you need to create a new project in google console in order to receive Google-client-id and Google-client-secret for OAuth
