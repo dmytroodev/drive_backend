@@ -9,11 +9,68 @@ datasource db {
 }
 
 model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  password    String?  
+  googleId    String?  @unique
+  name        String?
+  createdAt   DateTime @default(now())
+
+  folders     Folder[]
+  files       File[]
+
+  permissions Permission[]
+}
+
+model Folder {
   id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
+  name      String
+  parentId  String?
+  parent    Folder?  @relation("FolderTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Folder[] @relation("FolderTree")
+  isPublic  Boolean  @default(false)
+
+  files     File[]
+
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id])
+
   createdAt DateTime @default(now())
 }
+
+model File {
+  id        String   @id @default(uuid())
+  name      String
+  mimeType  String
+  size      Int
+  path      String
+  isPublic  Boolean  @default(false)
+
+  folderId  String?
+  folder    Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  ownerId   String
+  owner     User    @relation(fields: [ownerId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model Permission {
+  id           String   @id @default(uuid())
+
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+
+  resourceId   String
+  resourceType ResourceType
+
+  access       AccessType
+
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, resourceId, resourceType])
+}
+
 
 enum ResourceType {
   file
