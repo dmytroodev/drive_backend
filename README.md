@@ -1,98 +1,66 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+This is the backend application for a Drive-like file storage system.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+The backend is responsible for authentication, file and folder management,
+permissions logic and API access. The project was built as a pet project /
+test assignment with a focus on architecture and access control.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Getting Started
 
-## Description
+Firstly, you need to create a new project in google console in order to receive Google-client-id and Google-client-secret for OAuth
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The second step is to create database in postgresSQL
 
-## Project setup
+The next you should to do is creating .env file in root directory and fill appropriate variables, for example:
+DATABASE_URL="postgresql://root:root@localhost:5432/drive" - you need insert your connection link here
+
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+JWT_SECRET=""
+
+BACKEND_URL="http://localhost:3000"
+FRONTEND_URL="http://localhost:3001"
+
+Next, you need to install the dependencies:
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Compile and run the project
-
+After that run the following commands but make sure that all env variables is correct
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npx prisma generate
+npx prisma migrate dev
 ```
 
-## Run tests
-
+So project is ready to test, run command:
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run start:dev
 ```
 
-## Deployment
+## Features
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Authentication
+- **User registration and login**: Users can register and log in to access their accounts.
+- **JWT-based authentication**: Secure authentication using JSON Web Tokens.
+- **Optional Google OAuth login**: Users can authenticate via Google OAuth if configured.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Files & Folders
+- **File upload and storage**: Allows users to upload and store files on the server.
+- **Folder hierarchy**: Supports a parent-child folder structure to organize files.
+- **CRUD operations**: Users can create, rename, and delete files and folders.
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+### Sharing & Permissions
+- **Share files and folders**: Users can share files and folders with others via email.
+- **Permission roles**:
+  - `viewer` — read-only access.
+  - `editor` — read and write access.
+- **Synchronized permissions**: Permissions are synchronized in a single request for consistency.
+- **Owner access**: The owner always has full access to their files and folders.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Architecture Notes
+- **Business logic**: Implemented in services to separate concerns and maintain clean code.
+- **Controllers**: Controllers are kept thin, only handling request and response logic.
+- **DTOs (Data Transfer Objects)**: DTOs are isolated from Prisma models to improve architecture and maintainability.
+- **Permissions module**: Permissions logic is centralized in the Permissions module for easier management and scalability.
